@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 
 let tvScriptLoadingPromise;
 
-export default function TradingViewWidget({ itemdata }) {
+export default function TradingViewWidget({ itemdata, area }) {
   const onLoadScriptRef = useRef();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function TradingViewWidget({ itemdata }) {
 
     function createWidget() {
       if (
-        document.getElementById(`idChart${itemdata}`) &&
+        document.getElementById(`idChart${itemdata}${area}`) &&
         "TradingView" in window
       ) {
         new window.TradingView.widget({
@@ -50,7 +50,7 @@ export default function TradingViewWidget({ itemdata }) {
           save_image: false,
           hide_volume: true,
           range: "1D",
-          container_id: `idChart${itemdata}`,
+          container_id: `idChart${itemdata}${area}`,
         });
       }
     }
@@ -58,7 +58,7 @@ export default function TradingViewWidget({ itemdata }) {
 
   return (
     <div className="tradingview-widget-container">
-      <div id={`idChart${itemdata}`} />
+      <div id={`idChart${itemdata}${area}`} />
     </div>
   );
 }

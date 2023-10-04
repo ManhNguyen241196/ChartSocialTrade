@@ -1,0 +1,12 @@
+.container_watchlist {
+    border: 1px solid black;
+}
+
+.container_watchlist header {
+    font-weight: bolder;
+}
+
+.container_watchlist .body_tool {
+    display: flex;
+    justify-content: right;
+}

@@ -1,18 +1,68 @@
 import React from "react";
-import { Button, Dropdown, message, Space, Tooltip } from "antd";
+import { Button, Dropdown, message, Space } from "antd";
 import {
+  ArrowDownOutlined,
   DownOutlined,
   FallOutlined,
-  GlobalOutlined,
   RiseOutlined,
   SortAscendingOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
-export default function Fillter() {
-  const handleMenuClick = (e) => {
-    message.info("Key ở console.log");
-    console.log("click", e.key);
+
+import Binance from "binance-api-node";
+
+const client = Binance();
+
+export default function Fillter({ setListSymbol, listSynmbol }) {
+  let newListSymbol = [...listSynmbol];
+  //method lọc---------------------------
+  function filletMethod(array, keyFillter) {
+    const sortedProducts = array.sort((p1, p2) =>
+      parseFloat(p1[keyFillter]) < parseFloat(p2[keyFillter])
+        ? 1
+        : parseFloat(p1[keyFillter]) > parseFloat(p2[keyFillter])
+        ? -1
+        : 0
+    );
+    return sortedProducts;
+  }
+
+  const handleMenuClick = async (e) => {
+    //các lọc còn lại---------------------------
+    if (e.key !== "4") {
+      try {
+        const newPopularList = await Promise.all(
+          newListSymbol
+            .map(async (item) => {
+              let itemFetch = await client.dailyStats({ symbol: item });
+              if (itemFetch) {
+                return itemFetch;
+              }
+            })
+            .filter(Boolean) // remove undefined values
+        );
+
+        let newList = [];
+        //// lọc quoteVolume và priceChangePercent--------------------------
+        if (e.key === "3" || e.key === "2" || e.key === "1") {
+          const property = e.key === "3" ? "quoteVolume" : "priceChangePercent";
+          newList = [...filletMethod(newPopularList, property)].map(
+            (item) => item.symbol
+          );
+          if (e.key === "1") {
+            newList.reverse();
+          }
+        }
+        setListSymbol(newList);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    //lọc theo tên---------------------------
+    if (e.key === "4") {
+      setListSymbol([...newListSymbol].sort());
+    }
   };
+
   const items = [
     {
       label: "Tăng %",
@@ -25,9 +75,9 @@ export default function Fillter() {
       icon: <FallOutlined />,
     },
     {
-      label: "Phổ biến",
+      label: "Khối lượng",
       key: "3",
-      icon: <GlobalOutlined />,
+      icon: <ArrowDownOutlined />,
     },
     {
       label: "Tên",

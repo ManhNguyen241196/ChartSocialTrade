@@ -5,6 +5,7 @@ import WatchList from "../Right/WatchList/WatchList";
 import Market from "../Right/Market/Market";
 
 export default function Home() {
+
   return (
     <div className="container_home">
       <div className="container_left">Ben trai</div>
@@ -13,9 +14,10 @@ export default function Home() {
           <h3>Header Right</h3>
         </header>
         <body className="container_body">
-          <TradingView className="item" />
-          <Market className="item" />
-          <WatchList className="item" />
+
+          <TradingView  />
+          <Market  />
+          <WatchList  />
         </body>
       </div>
     </div>
